@@ -5,8 +5,10 @@ import (
 
 	"log"
 	"time"
+	"bl-gos/services"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
+	"github.com/joho/godotenv"
 )
 
 // Wails uses Go's `embed` package to embed the frontend files into the binary.
@@ -29,6 +31,12 @@ func init() {
 // logs any error that might occur.
 func main() {
 
+	if err := godotenv.Load(); err != nil {
+		log.Println("Peringatan: File .env tidak ditemukan, menggunakan environment variable sistem.")
+	}
+
+	dbService := services.NewDatabaseService()
+
 	// Create a new Wails application by providing the necessary options.
 	// Variables 'Name' and 'Description' are for application metadata.
 	// 'Assets' configures the asset server with the 'FS' variable pointing to the frontend files.
@@ -38,6 +46,7 @@ func main() {
 		Name:        "bl-gos",
 		Description: "A demo of using raw HTML & CSS",
 		Services: []application.Service{
+			application.NewService(dbService),
 			application.NewService(&GreetService{}),
 		},
 		Assets: application.AssetOptions{
