@@ -1,4 +1,4 @@
-module changeme
+module bl-gos
 
 go 1.26.0
 
